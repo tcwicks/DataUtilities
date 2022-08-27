@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CSVMerge": {
+      "commandName": "Project",
+      "commandLineArgs": "1 0 gzip D:\\Raw\\ODS\\IMS_PROD_INSHED D:\\Raw\\ODS\\Merged_IMS_PROD_INSHED.txt"
+    }
+  }
+}
