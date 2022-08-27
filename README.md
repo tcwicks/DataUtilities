@@ -26,5 +26,5 @@ Step 4) Run CSVMerge to join the files
 
 Example: CSVMerge.exe 1 0 gzip c:\Temp\Data_Extract "C:\Temp\Merged Data Extract.csv"
 
-### LImitations
+### Limitations
 This utility is currently single threaded. At some point I will make it multi threaded. The catch with muti threading here is that it would require buffering out of files processed concurrently so that they can be written to the output in the correct order.
