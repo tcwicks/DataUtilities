@@ -119,82 +119,93 @@ namespace GCPUtilities.CSVMerge // Note: actual namespace depends on the project
                 Console.WriteLine(ex.Message);
                 return;
             }
-            DirectoryInfo dirInput;
-            dirInput = new DirectoryInfo(inputFolder);
-            FileInfo[] inputFileList;
-            inputFileList = dirInput.GetFiles();
-            int numFiles = inputFileList.Length;
-            if (numFiles == 0)
+            try
             {
-                Console.WriteLine(@"Error: Source Path Folder does not contain any files");
-                return;
+                DirectoryInfo dirInput;
+                dirInput = new DirectoryInfo(inputFolder);
+                FileInfo[] inputFileList;
+                inputFileList = dirInput.GetFiles();
+                int numFiles = inputFileList.Length;
+                if (numFiles == 0)
+                {
+                    Console.WriteLine(@"Error: Source Path Folder does not contain any files");
+                    return;
+                }
+                bool isFirst = true;
+                int skipRows;
+                int progressFileCounter = 0;
+                foreach (FileInfo inputFile in inputFileList)
+                {
+                    progressFileCounter += 1;
+                    Console.WriteLine(String.Format(@"Progress: {0} of {1} :- {2}", progressFileCounter, numFiles, inputFile.Name));
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                        skipRows = firstFileStartRow;
+                    }
+                    else
+                    {
+                        skipRows = otherFilesStartRow;
+                    }
+                    switch (fileType)
+                    {
+                        case Enum_FileType.txt:
+                            using (FileStream fsReader = inputFile.OpenRead())
+                            {
+                                using (StreamReader reader = new StreamReader(fsReader))
+                                {
+                                    WriteOutput(reader, skipRows, TR);
+                                }
+                            }
+                            break;
+                        case Enum_FileType.gzip:
+                            using (FileStream fsReader = inputFile.OpenRead())
+                            {
+                                using (GZipInputStream unZipped = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(fsReader))
+                                {
+                                    using (StreamReader reader = new StreamReader(unZipped))
+                                    {
+                                        WriteOutput(reader, skipRows, TR);
+                                    }
+                                }
+                            }
+                            break;
+                        case Enum_FileType.bzip:
+                            using (FileStream fsReader = inputFile.OpenRead())
+                            {
+
+                                using (BZip2InputStream unZipped = new ICSharpCode.SharpZipLib.BZip2.BZip2InputStream(fsReader))
+                                {
+                                    using (StreamReader reader = new StreamReader(unZipped))
+                                    {
+                                        WriteOutput(reader, skipRows, TR);
+                                    }
+                                }
+                            }
+                            break;
+                        case Enum_FileType.lzw:
+                            using (FileStream fsReader = inputFile.OpenRead())
+                            {
+                                using (LzwInputStream unZipped = new ICSharpCode.SharpZipLib.Lzw.LzwInputStream(fsReader))
+                                {
+                                    using (StreamReader reader = new StreamReader(unZipped))
+                                    {
+                                        WriteOutput(reader, skipRows, TR);
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
             }
-            bool isFirst = true;
-            int skipRows;
-            int progressFileCounter = 0;
-            foreach (FileInfo inputFile in inputFileList)
+            catch (Exception ex)
             {
-                progressFileCounter += 1;
-                Console.WriteLine(String.Format(@"Progress: {0} of {1} :- {2}", progressFileCounter, numFiles, inputFile.Name));
-                if (isFirst)
-                {
-                    isFirst = false;
-                    skipRows = firstFileStartRow;
-                }
-                else
-                {
-                    skipRows = otherFilesStartRow;
-                }
-                switch (fileType)
-                {
-                    case Enum_FileType.txt:
-                        using (FileStream fsReader = inputFile.OpenRead())
-                        {
-                            using (StreamReader reader = new StreamReader(fsReader))
-                            {
-                                WriteOutput(reader, skipRows, TR);
-                            }
-                        }
-                        break;
-                    case Enum_FileType.gzip:
-                        using (FileStream fsReader = inputFile.OpenRead())
-                        {
-                            using (GZipInputStream unZipped = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(fsReader))
-                            {
-                                using (StreamReader reader = new StreamReader(unZipped))
-                                {
-                                    WriteOutput(reader, skipRows, TR);
-                                }
-                            }
-                        }
-                        break;
-                    case Enum_FileType.bzip:
-                        using (FileStream fsReader = inputFile.OpenRead())
-                        {
-                            
-                            using (BZip2InputStream unZipped = new ICSharpCode.SharpZipLib.BZip2.BZip2InputStream(fsReader))
-                            {
-                                using (StreamReader reader = new StreamReader(unZipped))
-                                {
-                                    WriteOutput(reader, skipRows, TR);
-                                }
-                            }
-                        }
-                        break;
-                    case Enum_FileType.lzw:
-                        using (FileStream fsReader = inputFile.OpenRead())
-                        {
-                            using (LzwInputStream unZipped = new ICSharpCode.SharpZipLib.Lzw.LzwInputStream(fsReader))
-                            {
-                                using (StreamReader reader = new StreamReader(unZipped))
-                                {
-                                    WriteOutput(reader, skipRows, TR);
-                                }
-                            }
-                        }
-                        break;
-                }
+                Console.WriteLine(String.Concat(@"Error: ", ex.Message));
+                Console.WriteLine(@"");
+                Console.WriteLine(ex.ToString());
             }
+            TR.Flush();
+            TR.Close();
         }
 
         private static void WriteOutput(StreamReader reader, int skipRows, TextWriter outputWriter)
