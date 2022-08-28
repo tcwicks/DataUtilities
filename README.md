@@ -1,4 +1,4 @@
-# GCPUtilities
+# Data Utilities
 This repository will contain various convenience utilities which I create to enhance my quality of life while working with the Google Cloud Platform.
 
 ## CSVMerge
