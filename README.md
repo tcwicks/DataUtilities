@@ -1,5 +1,5 @@
 # GCPUtilities
-This repository will contain various convenience utilities which I create to enhance my quality of life while workign with Google Cloud Platform.
+This repository will contain various convenience utilities which I create to enhance my quality of life while working with the Google Cloud Platform.
 
 ## CSVMerge
 Often we need to extract data from Big Query tables. Unfortunately the extract operation likes to split the output into a large number of files. This is especially true if the row counts are very large. Sure we can add a Limit 9999999999 type operator to the query to force a single file by forcing executing on only the leader node. However for large datasets this is not an option as it will take a very long time which if greater than 6 hours will simply timeout.
