@@ -4,7 +4,7 @@ using ICSharpCode.SharpZipLib.Lzw;
 using System;
 using System.Reflection.PortableExecutable;
 
-namespace GCPUtilities.CSVMerge // Note: actual namespace depends on the project name.
+namespace DataUtilities.CSVMerge // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
@@ -73,11 +73,11 @@ namespace GCPUtilities.CSVMerge // Note: actual namespace depends on the project
                 Console.WriteLine(@"");
                 Console.WriteLine("Example: CSVMerge.exe 1 1 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
                 Console.WriteLine(@"");
-                Console.WriteLine("Example: CSVMerge.exe 1 0 gzip \"C:\\Temp\\My Exported Files\" \"C:\\Temp\\Merged Data.csv\"");
+                Console.WriteLine("Example: CSVMerge.exe 0 1 gzip \"C:\\Temp\\My Exported Files\" \"C:\\Temp\\Merged Data.csv\"");
                 Console.WriteLine(@"");
                 Console.WriteLine("Example: CSVMerge.exe 12 1 bzip \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
                 Console.WriteLine(@"");
-                Console.WriteLine("Example: CSVMerge.exe 0 0 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
+                Console.WriteLine("Example: CSVMerge.exe 0 1 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
                 Console.WriteLine(@"");
                 Console.WriteLine(@"Note: default directory file sort order will be used for ordering the files");
                 Console.WriteLine(@"Example: ABC000.txt, ABC001.txt, ABC003.txt");
@@ -219,7 +219,10 @@ namespace GCPUtilities.CSVMerge // Note: actual namespace depends on the project
                 {
                     if (dataRow != null)
                     {
-                        outputWriter.WriteLine(dataRow);
+                        if (!string.IsNullOrEmpty(dataRow.Trim()))
+                        {
+                            outputWriter.WriteLine(dataRow);
+                        }
                     }
                 }
                 rowCounter++;
