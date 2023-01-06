@@ -4,6 +4,7 @@ using ICSharpCode.SharpZipLib.Lzw;
 using System;
 using System.Diagnostics.Metrics;
 using System.Reflection.PortableExecutable;
+using System.Text.RegularExpressions;
 
 namespace DataUtilities.CSVMerge // Note: actual namespace depends on the project name.
 {
@@ -24,7 +25,10 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
             string outputFile = String.Empty;
             Enum_FileType fileType = Enum_FileType.txt;
             int OutputFileCount = 1;
-            string FilenameRegex;
+            bool FilenameExtractEnable = false;
+            string FilenameFieldName = string.Empty;
+            string FilenameRegex = string.Empty;
+            string FilenameDelimiter = string.Empty;
 
             if (argsValid)
             {
@@ -70,26 +74,39 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                         OutputFileCount = 1;
                     }
                 }
-                if (args.Length >= 7)
+                if (args.Length >= 9)
                 {
-                    FilenameRegex = args[6];
-                    FilenameRegex = FilenameRegex.Trim();
-                    if (!int.TryParse(args[5], out OutputFileCount))
+                    FilenameFieldName = args[6];
+                    FilenameFieldName = FilenameFieldName.Trim().TrimStart('"').TrimEnd('"').Trim();
+                    if (!string.IsNullOrEmpty(FilenameFieldName))
                     {
-                        OutputFileCount = 1;
+                        FilenameRegex = args[7];
+                        FilenameRegex = FilenameRegex.Trim().TrimStart('"').TrimEnd('"').Trim();
+                        if (!string.IsNullOrEmpty(FilenameRegex))
+                        {
+                            FilenameDelimiter = args[8];
+                            FilenameDelimiter = FilenameDelimiter.Trim().TrimStart('"').TrimEnd('"').Trim();
+                            if (!string.IsNullOrEmpty(FilenameDelimiter))
+                            {
+                                FilenameExtractEnable = true;
+                            }
+                        }
                     }
                 }
             }
             if (!argsValid)
             {
-                Console.WriteLine(@"Usage: CSVMerge.exe <First File Start Row> <Other Files Start Row> <File Format> <Source Path Folder> <Destination File> <Output File Count>");
+                Console.WriteLine(@"Usage: CSVMerge.exe <First File Start Row> <Other Files Start Row> <File Format> <Source Path Folder> <Destination File> <Output File Count> <Fieldname From FileName> <Filename Field Extract Regex> <Delimiter After Filename Field>");
                 Console.WriteLine(@"");
-                Console.WriteLine(@"First File Start Row      Number of rows to skip from start of first file");
-                Console.WriteLine(@"Other Files Start Row     Number of rows to skip from start of subsequent files");
-                Console.WriteLine(@"File Format               txt | gzip | bzip | lzw");
-                Console.WriteLine(@"Source Path Folder        Folder containing files to be merged");
-                Console.WriteLine(@"Destination File          Output merged file. If file already exists it will be overwritten");
-                Console.WriteLine(@"Output File Count         Default is 1. Any other number will create _1 _2 etc.. outputs");
+                Console.WriteLine(@"First File Start Row              Number of rows to skip from start of first file");
+                Console.WriteLine(@"Other Files Start Row             Number of rows to skip from start of subsequent files");
+                Console.WriteLine(@"File Format                       txt | gzip | bzip | lzw");
+                Console.WriteLine(@"Source Path Folder                Folder containing files to be merged");
+                Console.WriteLine(@"Destination File                  Output merged file. If file already exists it will be overwritten");
+                Console.WriteLine(@"Output File Count                 Default is 1. Any other number will create _1 _2 etc.. outputs");
+                Console.WriteLine(@"Fieldname From FileName           Optional - Fieldname to extract from filename");
+                Console.WriteLine(@"Filename Field Extract Regex      Optional - Regex expression to extract value of Field from File Name");
+                Console.WriteLine(@"Delimiter After Filename Field    Optional - Delimitor to add after Field from File Name");
                 Console.WriteLine(@"");
                 Console.WriteLine("Example: CSVMerge.exe 1 1 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
                 Console.WriteLine(@"");
@@ -98,6 +115,8 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                 Console.WriteLine("Example: CSVMerge.exe 12 1 bzip \"C:\\Temp\\My Exported Files\" C:\\Temp\\SingleFile.csv");
                 Console.WriteLine(@"");
                 Console.WriteLine("Example: CSVMerge.exe 0 1 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\ThreeFiles.csv 3");
+                Console.WriteLine(@"");
+                Console.WriteLine("Example: CSVMerge.exe 0 1 txt \"C:\\Temp\\My Exported Files\" C:\\Temp\\ThreeFiles.csv 1 \"SourceSystem\" \"(?<=sys_src_)\\w{4}\" \",\" ");
                 Console.WriteLine(@"");
                 Console.WriteLine(@"Note: default directory file sort order will be used for ordering the files");
                 Console.WriteLine(@"Example: ABC000.txt, ABC001.txt, ABC003.txt");
@@ -204,6 +223,18 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                     {
                         skipRows = otherFilesStartRow;
                     }
+                    string FilenameRegexValue = string.Empty;
+                    if (FilenameExtractEnable)
+                    {
+                        Match RegexCapture = Regex.Match(inputFile.Name, FilenameRegex);
+                        if (RegexCapture != null)
+                        {
+                            if (RegexCapture.Success)
+                            {
+                                FilenameRegexValue = RegexCapture.Value;
+                            }
+                        }
+                    }
                     switch (fileType)
                     {
                         case Enum_FileType.txt:
@@ -211,7 +242,7 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                             {
                                 using (StreamReader reader = new StreamReader(fsReader))
                                 {
-                                    WriteOutput(reader, skipRows, TRList, isFirstFile);
+                                    WriteOutput(reader, skipRows, TRList, isFirstFile, FilenameExtractEnable, FilenameFieldName, FilenameDelimiter, FilenameRegexValue);
                                 }
                             }
                             break;
@@ -222,7 +253,7 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                                 {
                                     using (StreamReader reader = new StreamReader(unZipped))
                                     {
-                                        WriteOutput(reader, skipRows, TRList, isFirstFile);
+                                        WriteOutput(reader, skipRows, TRList, isFirstFile, FilenameExtractEnable, FilenameFieldName, FilenameDelimiter, FilenameRegexValue);
                                     }
                                 }
                             }
@@ -235,7 +266,7 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                                 {
                                     using (StreamReader reader = new StreamReader(unZipped))
                                     {
-                                        WriteOutput(reader, skipRows, TRList, isFirstFile);
+                                        WriteOutput(reader, skipRows, TRList, isFirstFile, FilenameExtractEnable, FilenameFieldName, FilenameDelimiter, FilenameRegexValue);
                                     }
                                 }
                             }
@@ -247,7 +278,7 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                                 {
                                     using (StreamReader reader = new StreamReader(unZipped))
                                     {
-                                        WriteOutput(reader, skipRows, TRList, isFirstFile);
+                                        WriteOutput(reader, skipRows, TRList, isFirstFile, FilenameExtractEnable, FilenameFieldName, FilenameDelimiter, FilenameRegexValue);
                                     }
                                 }
                             }
@@ -270,8 +301,9 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
 
         private static int counter = 0;
 
-        private static void WriteOutput(StreamReader reader, int skipRows, List<System.IO.TextWriter> TRList, bool ExtractHeader)
+        private static void WriteOutput(StreamReader reader, int skipRows, List<System.IO.TextWriter> TRList, bool ExtractHeader, bool FilenameExtractEnable, string FilenameFieldName, string FilenameDelimiter, string FilenameRegexValue)
         {
+
             string? dataRow;
             int rowCounter = 0;
            
@@ -289,6 +321,11 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                                 ExtractHeader = false;
                                 foreach (TextWriter writer in TRList)
                                 {
+                                    if (FilenameExtractEnable)
+                                    {
+                                        writer.Write(FilenameFieldName);
+                                        writer.Write(FilenameDelimiter);
+                                    }
                                     writer.WriteLine(dataRow);
                                 }
                             }
@@ -297,6 +334,11 @@ namespace DataUtilities.CSVMerge // Note: actual namespace depends on the projec
                                 if (counter >= TRList.Count)
                                 {
                                     counter = 0;
+                                }
+                                if (FilenameExtractEnable)
+                                {
+                                    TRList[counter].Write(FilenameRegexValue);
+                                    TRList[counter].Write(FilenameDelimiter);
                                 }
                                 TRList[counter].WriteLine(dataRow);
                                 counter += 1;

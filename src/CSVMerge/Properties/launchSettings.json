@@ -2,7 +2,7 @@
   "profiles": {
     "CSVMerge": {
       "commandName": "Project",
-      "commandLineArgs": "0 1 gzip D:\\GBP\\Temp\\clhd D:\\GBP\\Temp\\out\\chhd.txt 4"
+      "commandLineArgs": "0 0 txt D:\\GBP\\Working_Capital\\Datasets\\Input\\IMP_APBAL D:\\GBP\\Working_Capital\\Datasets\\Output\\IMP_APBAL.txt 1 \"Country\" \"(?<=GDWAWS_IMPLS_)\\w{2}\" \"|\""
     }
   }
 }
