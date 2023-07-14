@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33130.400
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSVMerge", "src\CSVMerge\CSVMerge.csproj", "{C2AD4D60-9E85-4763-B798-1056C087335A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CXSqlClrExtensions", "src\CXSqlClrExtensions\CXSqlClrExtensions.csproj", "{930E9A73-0BBD-45B3-8CD9-6DC20C9C6C4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CXSQLSchemaReplicate", "src\CXSQLSchemaReplicate\CXSQLSchemaReplicate.csproj", "{9668A282-80AB-4B82-9FAD-E14F889E84E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{C2AD4D60-9E85-4763-B798-1056C087335A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2AD4D60-9E85-4763-B798-1056C087335A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2AD4D60-9E85-4763-B798-1056C087335A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{930E9A73-0BBD-45B3-8CD9-6DC20C9C6C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{930E9A73-0BBD-45B3-8CD9-6DC20C9C6C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{930E9A73-0BBD-45B3-8CD9-6DC20C9C6C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{930E9A73-0BBD-45B3-8CD9-6DC20C9C6C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9668A282-80AB-4B82-9FAD-E14F889E84E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9668A282-80AB-4B82-9FAD-E14F889E84E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9668A282-80AB-4B82-9FAD-E14F889E84E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9668A282-80AB-4B82-9FAD-E14F889E84E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
