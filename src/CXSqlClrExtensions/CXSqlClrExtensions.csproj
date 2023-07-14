@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CXSqlClrExtensions.pfx" />
+    <None Include="CXSqlClrExtensions_Public.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

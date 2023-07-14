@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.SqlServer.Dac.Compare;
 using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.Dac;
 
 namespace CXSQLSchemaReplicate
 {
@@ -137,11 +138,18 @@ namespace CXSQLSchemaReplicate
                         if (Param_PublishChanges)
                         {
                             Console.WriteLine("Publishing schema...");
-                            SchemaComparePublishResult publishResult = comparisonResult.PublishChangesToDatabase();
+                            //SchemaComparePublishResult publishResult = comparisonResult.PublishChangesToDatabase();
+                            SchemaComparePublishResult publishResult;
+                            publishResult = comparisonResult.PublishChangesToDatabase();
+                            foreach (var Error in publishResult.Errors)
+                            {
+                                Console.WriteLine(Error.ToString());
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
+                        Console.Write(ex.ToString());
                     }
                 }
             }
@@ -162,6 +170,7 @@ namespace CXSQLSchemaReplicate
             SourceObject = Difference.SourceObject as TSqlObject;
             sbDiff.Append(Difference.Name).Append(@" ").Append(Enum.GetName(typeof(SchemaDifferenceType), Difference.DifferenceType)).Append(@" ")
                 .Append(Difference.Included ? @"Included" : "Excluded").Append(@" ").Append(Enum.GetName(typeof(SchemaUpdateAction), Difference.UpdateAction));
+            
             if (SourceObject  != null)
             {
                 sbDiff.Append(@" ").Append(SourceObject.ObjectType.Name);
