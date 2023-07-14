@@ -59,8 +59,11 @@ Implemented methods:
 
 ## SQL Schema Replicate
 There are multiple use cases for this.
+
 Example: There are instances where as part of an ETL process we need to spin up a clone of a template database in order to run operations on it
+
 Example: Keeping a backup copy of the schema and code in a database without the large volumes of data.
+
 Example: complex ETL processes some databases may contain very large ephemeral staging databases. While the data itself is not worth backing up the stored procedures, functions, schemas etc.. are all very important. In this context the schema can be synced to a different database which is regularly backed up. In summary this allows backing up only the schema and excluding the data of a large terrabyte database
 
 Command line utility with options provided to:
