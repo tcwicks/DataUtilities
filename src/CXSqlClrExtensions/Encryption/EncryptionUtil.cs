@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace CXSqlClrExtensions.Encryption
 {
-    public static class EncryptionUtil
+    public static partial class EncryptionUtil
     {
+        /// <summary>
+        /// Create a separate partial class with the same name but outside of source control
+        /// Comment this Random Guid and define it in the new partial class
+        /// </summary>
+        private const string RandomGuid = @"af024812-260b-4384-9b40-aef660476f46";
         private static byte[] RandomSalt()
         {
             return RandomBytes(16);
@@ -46,10 +51,6 @@ namespace CXSqlClrExtensions.Encryption
             salt = RandomSalt();
             return Encrypt(settingsKey, content, salt);
         }
-        /// <summary>
-        /// Change this to a new GUID or some other random text block for security
-        /// </summary>
-        private const string RandomGuid = @"af024812-260b-4384-9b40-aef660476f46";
         public static byte[] Encrypt(string settingsKey, string content, byte[] salt)
         {
             byte[] key;
