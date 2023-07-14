@@ -138,7 +138,6 @@ namespace CXSQLSchemaReplicate
                         if (Param_PublishChanges)
                         {
                             Console.WriteLine("Publishing schema...");
-                            //SchemaComparePublishResult publishResult = comparisonResult.PublishChangesToDatabase();
                             SchemaComparePublishResult publishResult;
                             publishResult = comparisonResult.PublishChangesToDatabase();
                             foreach (var Error in publishResult.Errors)
