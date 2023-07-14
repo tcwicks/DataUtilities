@@ -12,7 +12,7 @@ Adds support within SQL Server for Select command to Table BCP operations.
 Adds support within SQL Server for replicating schema and data to Google Big Query datasets
 Adds support for securely storing GCP service account credentials within SQL server
 
-Please see source code for explanation on how to install within SQL Server and instrutions on properly signing the assemby
+Please see source code in CXSQLExt.cs for explanation on how to install within SQL Server and instrutions on properly signing the assemby
 
 ### SQL Server BCP support
 Often with ETL processes we need to insert large recordsets from a view, table or select statement into a table. This presents a number of challenges:
@@ -38,6 +38,8 @@ Implemented methods:
 * CXSQLExt.CredentialSave(string secretKey, string secretValue)  -- Saves credentials under the specified key
 
 No retreve function is implemented. This is intentional. GCP Big Query methods will retrieve the credentials internally and use them based on the specified key.
+
+Note: For security reasons please edit EncryptionUtil.cs and change the hard coded text in RandomGuid
 
 ### SQL Server To Google Big Query Replication
 Google big query is amazing for querying ginormous record sets. However its not the best for complex ETL operations with point updates. CDC based replication carries a significant overhead. This implementation uses a keep it simple approach. This implementation will:
