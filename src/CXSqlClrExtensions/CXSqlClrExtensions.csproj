@@ -58,6 +58,7 @@
     <Compile Include="BCP\BCPRowsToTableWriter.cs" />
     <Compile Include="BCP\BCPSourceSQLToTableWrapper.cs" />
     <Compile Include="Encryption\EncryptionUtil.cs" />
+    <Compile Include="Encryption\EncryptionUtilVars.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GCPBigQuery\BQInsertJob.cs" />
     <Compile Include="GCPBigQuery\BQReplicate.cs" />
