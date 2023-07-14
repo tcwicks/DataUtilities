@@ -62,8 +62,8 @@ There are multiple use cases for this.
 My motivation was because complex ETL processes some databases may contain very large ephemeral staging databases. While the data itself is not worth backing up the stored procedures, functions, schemas etc.. are all very important. In this context the schema can be synced to a different database which is regularly backed up. In summary this allows backing up only the schema and excluding the data of a large terrabyte database
 
 Command line utility with options provided to:
-* Generate SQL Script
-* Directly Publish Replication Changes
+* Compare and Generate SQL Script
+* Compare and Directly Publish Schema Syncronization Changes
 
 ## CSVMerge
 Often we need to extract data from Big Query tables. Unfortunately the extract operation likes to split the output into a large number of files. This is especially true if the row counts are very large. Sure we can add a Limit 9999999999 type operator to the query to force a single file by forcing executing on only the leader node. However for large datasets this is not an option as it will take a very long time which if greater than 6 hours will simply timeout.
