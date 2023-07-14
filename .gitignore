@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /Certificates/CXSqlClrExtensions.pvk
 /Certificates
 /src/CXSqlClrExtensionsTestApp
+/src/CXSqlClrExtensions/Encryption/EncryptionUtilVars.cs
